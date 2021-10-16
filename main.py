@@ -22,25 +22,29 @@ class Paint:
     # 画像をグレースケールに設定する関数
     # グレースケールとは? : https://www.shinkohsha.co.jp/blog/monochrome-shirokuro-grayscale/
     def setGray(self):
-        # cvtColor : 画像の色を変更する関数
-        # 第一引数 : 画像情報
-        # 第二引数 : 画像の色を変更するタイプの指定
-        # cv2.COLOR_BGR2GRAY : 画像をグレースケールへ変更する。
-        # 画像の色を変更するタイプ一覧情報 : https://docs.opencv.org/4.2.0/d8/d01/group__imgproc__color__conversions.html#ga397ae87e1288a81d2363b61574eb8cab
+        # cvtColor : 画像の色空間(色)の変更を行う関数。
+        # cvtColorについて : https://kuroro.blog/python/7IFCPLA4DzV8nUTchKsb/
+        # 第一引数 : 多次元配列(numpy.ndarray)
+        # 第二引数 : 変更前の画像の色空間(色)と、変更後の画像の色空間(色)を示す定数を設定。
+        # cv2.COLOR_BGR2GRAY : BGR(Blue, Green, Red)形式の色空間(色)を持つ画像をグレースケール画像へ変更する。
         self.img = cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)
 
     # グレースケール画像を二値画像へ変更する関数
     def setBinaryImage(self):
         # threshold : しきい値を用いて画像を二値画像へ変更する関数。
-        # 第一引数 : 画像情報(グレースケールでないといけない。二値画像へ変更できないため。)
-        # 第二引数 : しきい値(しきい値の設定次第で、輪郭の検出の精度が変わります。何度もしきい値を変えて、生成される二値画像を確認し、しきい値を定めることをおすすめします。)
-        # 第三引数 : しきい値を超えた画素(点)に対して、与える色の値を指定。黒色とする。
-        # 第四引数 : 二値画像を判定する条件のタイプを設定する。
-        # cv2.THRESH_BINARY : (画素(点)の値 <= 第二引数)の場合、画素(点)に対して、0(白色)の値を与える。(画素(点)の値 > 第二引数)の場合、画素(点)に対して、第三引数の値(黒色)を与える。
-        # 二値画像を判定する条件のタイプ一覧情報 : https://pystyle.info/opencv-image-binarization/
+        # thresholdについて : https://kuroro.blog/python/jofbNumJ9HtfTxnM8QHJ/
+
+        # 第一引数 : 多次元配列(numpy.ndarray)
+        # 第二引数 : しきい値。float型。
+
+        # 第三引数 : しきい値を超えた画素に対して、255を設定する。しきい値を超えていないものに関しては、0を与える。
+
+        # 第四引数 : 二値画像を判定する条件のタイプを指定する。
+        # cv2.THRESH_BINARY : (画素 <= 第二引数)の場合、画素に対して、0の値を与える。(画素 > 第二引数)の場合、画素に対して、第三引数の値を与える。
+
         # 戻り値 #################
         # self.ret : しきい値を返す。
-        # self.img : 二値画像情報を返す。
+        # self.img : 多次元配列(numpy.ndarray)を返す。
         #########################
         self.ret, self.img = cv2.threshold(self.img, 160, 255, cv2.THRESH_BINARY)
 
@@ -78,15 +82,17 @@ class Paint:
     def getImg(self):
         return self.img
 
-    # 画像情報を書き込む関数
+    # 画像を保存する関数
     def writeImg(self, filePath):
-        # imwrite : 画像の書き出しを行う関数
-        # 第一引数 : 書き出し先の画像ファイル名
-        # 第二引数 : 画像情報
+        # imwrite : 画像の保存を行う関数
+        # imwriteについて : https://kuroro.blog/python/i0tNE1Mp8aEz8Z7n6Ggg/
+        # 第一引数 : 保存先の画像ファイル名
+        # 第二引数 : 多次元配列(numpy.ndarray)
         cv2.imwrite(filePath, self.img)
 
-# imread : 指定した画像ファイルパスを読み込んで、画像に対してcv2(OpenCV)を利用できるようにする。
-# 第一引数 : 画像ファイルパス
+# imread : 画像ファイルを読み込んで、多次元配列(numpy.ndarray)にする。
+# imreadについて : https://kuroro.blog/python/wqh9VIEmRXS4ZAA7C4wd/
+# 第一引数 : 画像のファイルパス
 ins = Paint(cv2.imread('./input.jpg'))
 ins.setGray()
 ins.setBinaryImage()
